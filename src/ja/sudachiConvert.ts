@@ -104,7 +104,7 @@ if (import.meta.main) {
     console.log(`Unique readings: ${sortedReadings.length}`);
 
     const outLines: string[] = [];
-    const skipAmount = 6;
+    const skipAmount = 1;
     for (const [reading, entries] of sortedReadings) {
         entries.sort((a, b) => a.cost - b.cost);
         const uniqueHeads = [...new Set(entries.map((e) => e.head))].filter((_, idx) => idx % skipAmount === 0);
