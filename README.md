@@ -1,15 +1,34 @@
-# WordSquares
-A simple C++ solver for dense word grids.
+# WordSquaresJP
 
-See this [YouTube Video](https://youtu.be/zWIsnrxL-Zc) for the best explanation.
+[WordSquares](https://github.com/HackerPoet/WordSquares) の Typescript (Deno) 移植および日本語対応
 
-**NOTE:** This repository is not actively maintained and is for reference only.
+## 実行方法
 
-## Usage
-To use this solver, you'll need a list of valid words and a word frequency list. If you'd like to use the same files as shown in the video, download links are provided below.
+### 英語版
 
-[Scrabble Words List](https://raw.githubusercontent.com/andrewchen3019/wordle/refs/heads/main/Collins%20Scrabble%20Words%20(2019).txt)
+#### 辞書データ
 
-[NGram Viewer Frequencies](https://www.kaggle.com/datasets/wheelercode/dictionary-word-frequency)
+- [Scrabble Words List](https://raw.githubusercontent.com/andrewchen3019/wordle/refs/heads/main/Collins%20Scrabble%20Words%20(2019).txt) を `src/en/scrabble_words.txt` にダウンロード
+- [NGram Viewer Frequencies](https://www.kaggle.com/datasets/wheelercode/dictionary-word-frequency) を `src/en/ngram_freq_dict.csv` にダウンロード
 
-You'll need to update the `DICTIONARY` and `FREQ_FILTER` paths to reference these files. These and other parameters are found on the top of `main.cpp`. Modify these to try different kinds of word grids. Basic documentation is provided in this file.
+#### 実行
+
+```bash
+deno run --allow-read ./src/en/main.ts
+```
+
+### 日本語版
+
+#### 辞書データ
+
+[Sudachi Dictionary Sources](http://sudachi.s3-website-ap-northeast-1.amazonaws.com/sudachidict-raw/) から `src/ja/*.csv` にダウンロードして以下のコマンドを実行
+
+```bash
+deno run --allow-read --allow-write ./src/ja/sudachiConvert.ts
+```
+
+#### 実行
+
+```bash
+deno run --allow-read --allow-write ./src/ja/main.ts
+```

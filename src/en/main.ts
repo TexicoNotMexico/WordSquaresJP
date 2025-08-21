@@ -1,7 +1,7 @@
 import { Trie } from "./trie.ts";
 
-const DICTIONARY = "./scrabble_words.txt";
-const FREQ_FILTER = "./ngram_freq_dict.csv";
+const DICTIONARY = "src/en/scrabble_words.txt";
+const FREQ_FILTER = "src/en/ngram_freq_dict.csv";
 const SIZE_W = 5;
 const SIZE_H = 5;
 const MIN_FREQ_W = 20000;
