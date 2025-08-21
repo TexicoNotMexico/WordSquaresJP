@@ -17,6 +17,14 @@ const g_words: string[] = Array(SIZE_H * SIZE_W).fill("");
 const g_rows: string[] = Array(SIZE_H).fill("");
 const g_cols: string[] = Array(SIZE_W).fill("");
 
+type WordSquareResult = {
+    grid: string[];
+    rows: { yomi: string; forms: string[] }[];
+    cols: { yomi: string; forms: string[] }[];
+};
+
+const results: WordSquareResult[] = [];
+
 async function LoadDictionary(fname: string, length: number, trie: Trie) {
     console.log(`Loading Dictionary ${fname}...`);
     const data = await Deno.readTextFile(fname);
@@ -38,7 +46,7 @@ async function LoadDictionary(fname: string, length: number, trie: Trie) {
     console.log(`Loaded ${numWords} words.`);
 }
 
-function PrintBox(words: string[]) {
+function SaveResult(words: string[]) {
     const rowWords: string[] = [];
     for (let h = 0; h < SIZE_H; h++) {
         const row = words.slice(h * SIZE_W, (h + 1) * SIZE_W).join("");
@@ -66,24 +74,20 @@ function PrintBox(words: string[]) {
         }
     }
 
-    for (let h = 0; h < SIZE_H; h++) {
-        console.log(rowWords[h]);
-    }
-    console.log("");
+    const rows = rowWords.map((yomi, i) => ({
+        yomi,
+        forms: g_forms.get(yomi) ?? [],
+    }));
+    const cols = colWords.map((yomi, i) => ({
+        yomi,
+        forms: g_forms.get(yomi) ?? [],
+    }));
 
-    for (let h = 0; h < SIZE_H; h++) {
-        const yomi = rowWords[h];
-        const forms = g_forms.get(yomi) ?? [];
-        console.log(`横${h + 1}: ${forms.join("/")}`);
-    }
-
-    for (let w = 0; w < SIZE_W; w++) {
-        const yomi = colWords[w];
-        const forms = g_forms.get(yomi) ?? [];
-        console.log(`縦${w + 1}: ${forms.join("/")}`);
-    }
-
-    console.log("");
+    results.push({
+        grid: rowWords,
+        rows,
+        cols,
+    });
 }
 
 function BoxSearch(trie: Trie | null, vtries: (Trie | null)[], pos: number) {
@@ -92,7 +96,7 @@ function BoxSearch(trie: Trie | null, vtries: (Trie | null)[], pos: number) {
 
     if (v_ix === 0) {
         if (pos === SIZE_H * SIZE_W) {
-            PrintBox(g_words);
+            SaveResult(g_words);
             return;
         }
         trie = g_trie_w;
@@ -134,5 +138,11 @@ if (import.meta.main) {
     const vtries: (Trie | null)[] = Array(SIZE_W).fill(trie_h);
     BoxSearch(null, vtries, 0);
 
-    console.log("Done.");
+    const output = {
+        size: { w: SIZE_W, h: SIZE_H },
+        results,
+    };
+    await Deno.writeTextFile("found.json", JSON.stringify(output, null, 2));
+
+    console.log(`Done. ${results.length} results saved to found.json`);
 }
