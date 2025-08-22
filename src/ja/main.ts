@@ -17,6 +17,8 @@ const g_words: string[] = Array(SIZE_H * SIZE_W).fill("");
 const g_rows: string[] = Array(SIZE_H).fill("");
 const g_cols: string[] = Array(SIZE_W).fill("");
 
+const OUTPUT = "src/ja/";
+
 type WordSquareResult = {
     grid: string[];
     rows: { yomi: string; forms: string[] }[];
@@ -83,6 +85,8 @@ function SaveResult(words: string[]) {
         forms: g_forms.get(yomi) ?? [],
     }));
 
+    console.log(rowWords.join("\n"));
+
     results.push({
         grid: rowWords,
         rows,
@@ -106,6 +110,8 @@ function BoxSearch(trie: Trie | null, vtries: (Trie | null)[], pos: number) {
 
     for (const { ix, letter, trie: nextTrie } of trie.iter()) {
         if (!vtries[v_ix]?.hasIx(ix)) continue;
+
+        if (pos === 0) console.log(`=== [${letter}] ===`);
 
         g_words[pos] = letter;
 
@@ -142,7 +148,7 @@ if (import.meta.main) {
         size: { w: SIZE_W, h: SIZE_H },
         results,
     };
-    await Deno.writeTextFile("found.json", JSON.stringify(output, null, 2));
+    await Deno.writeTextFile(OUTPUT + `found${SIZE_W}x${SIZE_H}.json`, JSON.stringify(output, null, 2));
 
     console.log(`Done. ${results.length} results saved to found.json`);
 }
